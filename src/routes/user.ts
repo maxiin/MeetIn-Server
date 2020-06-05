@@ -4,12 +4,13 @@ import { UserController } from "../controller/UserController";
 
 const router = Router();
 
-router.get("/users", [checkJwt], UserController.all);
+router.get("/", [checkJwt], UserController.all);
+// router.get("/", UserController.all);
 
-router.get("/users/:id", [checkJwt], UserController.one);
+router.get("/:id", [checkJwt], UserController.one);
 
-router.post("/users", [checkJwt], UserController.save);
+router.post("/", [checkJwt], UserController.save);
 
-router.delete("/users/:id", [checkJwt], UserController.remove);
+router.delete("/:id", [checkJwt], UserController.remove);
 
-export default router;
+module.exports = router;

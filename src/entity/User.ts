@@ -7,6 +7,9 @@ export class User {
     constructor(fields?: DeepPartial<User>) {
         if(fields) {
             Object.assign(this, fields);
+            if(fields.password) {
+                this.setAndHashPassword(fields.password);
+            }
         }
     }
 
@@ -19,17 +22,17 @@ export class User {
     @Column()
     password: string;
 
-    @Column()
+    @Column({default: ''})
     firstName: string;
 
-    @Column()
+    @Column({default: ''})
     lastName: string;
 
-    @Column()
-    age: number;
+    @Column({default: null, nullable: true})
+    age?: number;
 
-    hashPassword() {
-        this.password = bcrypt.hashSync(this.password, 8);
+    setAndHashPassword(password) {
+        this.password = bcrypt.hashSync(password, 8);
     }
     
     checkIfUnencryptedPasswordIsValid(unencryptedPassword: string) {

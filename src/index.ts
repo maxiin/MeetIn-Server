@@ -3,10 +3,13 @@ import {createConnection} from "typeorm";
 import * as express from "express";
 import * as bodyParser from "body-parser";
 import {Request, Response} from "express";
-import {Routes} from "./routes";
 import {User} from "./entity/User";
 import helmet = require("helmet");
 import cors = require("cors");
+const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/user");
+
+const color = ['\u001b[36m', '\u001b[0m'];
 
 createConnection().then(async connection => {
 
@@ -30,23 +33,12 @@ createConnection().then(async connection => {
     //     });
     // });
 
-    // app.use("/", Routes);
+    app.use("/", authRoutes);
+    app.use("/users", userRoutes);
 
     // start express server
     app.listen(3000, () => {
-        console.log("Express server has started on port 3000. Open http://localhost:3000/users to see results");
+        console.log(`${color[0]}Server Started at ${new Date()}${color[1]}`);
     });
-
-    // insert new users for test
-    // await connection.manager.save(connection.manager.create(User, {
-    //     firstName: "Timber",
-    //     lastName: "Saw",
-    //     age: 27
-    // }));
-    // await connection.manager.save(connection.manager.create(User, {
-    //     firstName: "Phantom",
-    //     lastName: "Assassin",
-    //     age: 24
-    // }));
 
 }).catch(error => console.log(error));

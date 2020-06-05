@@ -4,21 +4,22 @@ import {User} from "../entity/User";
 
 export class UserController {
 
-    static async all(request: Request, response: Response, next: NextFunction) {
-        return getRepository(User).find();
+    static async all(req: Request, res: Response, next: NextFunction) {
+        const user = await getRepository(User).find();
+        return res.send(user);
     }
 
-    static async one(request: Request, response: Response, next: NextFunction) {
-        return getRepository(User).findOne(request.params.id);
+    static async one(req: Request, res: Response, next: NextFunction) {
+        return getRepository(User).findOne(req.params.id);
     }
 
-    static async save(request: Request, response: Response, next: NextFunction) {
-        return getRepository(User).save(request.body);
+    static async save(req: Request, res: Response, next: NextFunction) {
+        return getRepository(User).save(req.body);
     }
 
-    static async remove(request: Request, response: Response, next: NextFunction) {
-        let userToRemove = await getRepository(User).findOne(request.params.id);
-        await getRepository(User).remove(userToRemove);
+    static async remove(req: Request, res: Response, next: NextFunction) {
+        let userToRemove = await getRepository(User).findOne(req.params.id);
+        res.send(getRepository(User).remove(userToRemove));
     }
 
 }

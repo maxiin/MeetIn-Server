@@ -10,16 +10,16 @@ class AuthController {
   static signup = async (req: Request, res: Response) => {
     let { username, password } = req.body;
     if (!(username && password)) {
-      res.status(400).send();
+      return res.status(400).send();
     }
 
     //Make new user
     let user = new User({username, password});
-    try {
-      user = await getRepository(User).create(user);
-    } catch (error) {
-      res.status(401).send();
+    const foundUser = await getRepository(User).findOne({ where: { username } });
+    if(foundUser) {
+      return res.status(400).send('User already Exists');
     }
+    user = await getRepository(User).save(user);
 
     const token = jwt.sign(
       { userId: user.id, username: user.username },
@@ -28,7 +28,7 @@ class AuthController {
     );
 
     //Send the jwt in the response
-    res.send(token);
+    return res.send(token);
   }
 
   static login = async (req: Request, res: Response) => {
@@ -43,12 +43,12 @@ class AuthController {
     try {
       user = await getRepository(User).findOneOrFail({ where: { username } });
     } catch (error) {
-      res.status(401).send();
+      res.status(401).send(error);
     }
 
     //Check if encrypted password match
     if (!user.checkIfUnencryptedPasswordIsValid(password)) {
-      res.status(401).send();
+      res.status(401).send("password wrong");
       return;
     }
 
@@ -88,15 +88,8 @@ class AuthController {
       return;
     }
 
-    //Validate de model (password lenght)
-    user.password = newPassword;
-    const errors = await validate(user);
-    if (errors.length > 0) {
-      res.status(400).send(errors);
-      return;
-    }
     //Hash the new password and save
-    user.hashPassword();
+    user.setAndHashPassword(newPassword);
     userRepository.save(user);
 
     res.status(204).send();
