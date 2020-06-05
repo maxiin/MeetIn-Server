@@ -16,10 +16,10 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({default: ''})
     username: string;
     
-    @Column()
+    @Column({select: false, default: ''})
     password: string;
 
     @Column({default: ''})
