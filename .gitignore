@@ -5,3 +5,4 @@ build/
 tmp/
 temp/
 **/config.ts
+ormconfig.json

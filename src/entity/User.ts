@@ -1,8 +1,14 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, DeepPartial} from "typeorm";
 import * as bcrypt from "bcryptjs";
 
 @Entity()
 export class User {
+
+    constructor(fields?: DeepPartial<User>) {
+        if(fields) {
+            Object.assign(this, fields);
+        }
+    }
 
     @PrimaryGeneratedColumn()
     id: number;

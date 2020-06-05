@@ -7,6 +7,30 @@ import { User } from "../entity/User";
 import config from "../config/config";
 
 class AuthController {
+  static signup = async (req: Request, res: Response) => {
+    let { username, password } = req.body;
+    if (!(username && password)) {
+      res.status(400).send();
+    }
+
+    //Make new user
+    let user = new User({username, password});
+    try {
+      user = await getRepository(User).create(user);
+    } catch (error) {
+      res.status(401).send();
+    }
+
+    const token = jwt.sign(
+      { userId: user.id, username: user.username },
+      config.jwtSecret,
+      { expiresIn: "1h" }
+    );
+
+    //Send the jwt in the response
+    res.send(token);
+  }
+
   static login = async (req: Request, res: Response) => {
     //Check if username and password are set
     let { username, password } = req.body;
@@ -15,10 +39,9 @@ class AuthController {
     }
 
     //Get user from database
-    const userRepository = getRepository(User);
     let user: User;
     try {
-      user = await userRepository.findOneOrFail({ where: { username } });
+      user = await getRepository(User).findOneOrFail({ where: { username } });
     } catch (error) {
       res.status(401).send();
     }
