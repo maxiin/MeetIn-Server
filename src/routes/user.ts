@@ -5,7 +5,6 @@ import { UserController } from "../controller/UserController";
 const router = Router();
 
 router.get("/", [checkJwt], UserController.all);
-// router.get("/", UserController.all);
 
 router.get("/:id", [checkJwt], UserController.one);
 

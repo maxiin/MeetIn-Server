@@ -8,21 +8,21 @@ import config from "../config/config";
 
 class AuthController {
   static signup = async (req: Request, res: Response) => {
-    let { username, password } = req.body;
-    if (!(username && password)) {
+    let { email, password } = req.body;
+    if (!(email && password)) {
       return res.status(400).send();
     }
 
     //Make new user
-    let user = new User({username, password});
-    const foundUser = await getRepository(User).findOne({ where: { username } });
+    let user = new User({email, password});
+    const foundUser = await getRepository(User).findOne({ where: { email } });
     if(foundUser) {
       return res.status(400).send('User already Exists');
     }
     user = await getRepository(User).save(user);
 
     const token = jwt.sign(
-      { userId: user.id, username: user.username },
+      { userId: user.id, email: user.email },
       config.jwtSecret,
       { expiresIn: "1h" }
     );
@@ -33,15 +33,15 @@ class AuthController {
 
   static login = async (req: Request, res: Response) => {
     //Check if username and password are set
-    let { username, password } = req.body;
-    if (!(username && password)) {
+    let { email, password } = req.body;
+    if (!(email && password)) {
       res.status(400).send();
     }
 
     //Get user from database
     let user: User;
     try {
-      user = await getRepository(User).findOneOrFail({ where: { username } });
+      user = await getRepository(User).findOneOrFail({ where: { email } });
     } catch (error) {
       res.status(401).send(error);
     }

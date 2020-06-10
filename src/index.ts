@@ -8,6 +8,7 @@ import helmet = require("helmet");
 import cors = require("cors");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
+const eventRoutes = require("./routes/event");
 
 const color = ['\u001b[36m', '\u001b[0m'];
 
@@ -35,10 +36,11 @@ createConnection().then(async connection => {
 
     app.use("/", authRoutes);
     app.use("/users", userRoutes);
+    app.use("/events", eventRoutes);
 
     // start express server
     app.listen(3000, () => {
-        console.log(`${color[0]}Server Started at ${new Date()}${color[1]}`);
+        console.log(`${color[0]}Server Started at port ${3000} at ${new Date()}${color[1]}`);
     });
 
 }).catch(error => console.log(error));
