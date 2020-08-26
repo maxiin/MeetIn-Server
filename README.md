@@ -1,7 +1,4 @@
-# Awesome Project Build with TypeORM
+# Server for my flutter app
+Might be reworked after the app is ready.
 
-Steps to run this project:
-
-1. Run `npm i` command
-2. Setup database settings inside `ormconfig.json` file
-3. Run `npm start` command
+This is a wip, will not be updated until the app is complete. 
